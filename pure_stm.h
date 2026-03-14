@@ -8,9 +8,12 @@
  */
 
 // --- General Definitions ---
+#define LOW 0
+#define HIGH 1
+#define INPUT 0
+#define OUTPUT 1
 #define HSI 0
 #define HSE 1
-
 // --- GPIO Register Structure ---
 typedef struct {
     volatile uint32_t MODER;    
@@ -108,37 +111,37 @@ typedef struct {
 } TIM_GenPurp_TypeDef; // For TIM2 to TIM5
 
 typedef struct {
-    volatile uint32_t CR1;      // Control register 1
-    volatile uint32_t CR2;      // Control register 2
-    volatile uint32_t SMCR;     // Slave mode control register
-    volatile uint32_t DIER;     // DMA/Interrupt enable register
-    volatile uint32_t SR;       // Status register
-    volatile uint32_t EGR;      // Event generation register
-    volatile uint32_t CCMR1;    // Capture/compare mode register 1
-    uint32_t reserved1;         // Reserved (0x1C)
-    volatile uint32_t CCER;     // Capture/compare enable register
-    volatile uint32_t CNT;      // Counter
-    volatile uint32_t PSC;      // Prescaler
-    volatile uint32_t ARR;      // Auto-reload register
-    uint32_t reserved2;         // Reserved (0x30)
-    volatile uint32_t CCR1;     // Capture/compare register 1
-    volatile uint32_t CCR2;     // Capture/compare register 2
+    volatile uint32_t CR1;      
+    volatile uint32_t CR2;      
+    volatile uint32_t SMCR;     
+    volatile uint32_t DIER;     
+    volatile uint32_t SR;       
+    volatile uint32_t EGR;      
+    volatile uint32_t CCMR1;    
+    uint32_t reserved1;         
+    volatile uint32_t CCER;    
+    volatile uint32_t CNT;     
+    volatile uint32_t PSC;      
+    volatile uint32_t ARR;      
+    uint32_t reserved2;         
+    volatile uint32_t CCR1;     
+    volatile uint32_t CCR2;    
 } TIM9_TypeDef; //  For TIM9
 
 typedef struct {
-    volatile uint32_t CR1;      // Control register 1
-    uint32_t reserved0[2];      // Reserved (0x04 - 0x08)
-    volatile uint32_t DIER;     // DMA/Interrupt enable register
-    volatile uint32_t SR;       // Status register
-    volatile uint32_t EGR;      // Event generation register
-    volatile uint32_t CCMR1;    // Capture/compare mode register 1
-    uint32_t reserved1;         // Reserved (0x1C)
-    volatile uint32_t CCER;     // Capture/compare enable register
-    volatile uint32_t CNT;      // Counter
-    volatile uint32_t PSC;      // Prescaler
-    volatile uint32_t ARR;      // Auto-reload register
-    uint32_t reserved2;         // Reserved (0x30)
-    volatile uint32_t CCR1;     // Capture/compare register 1
+    volatile uint32_t CR1;     
+    uint32_t reserved0[2];      
+    volatile uint32_t DIER;    
+    volatile uint32_t SR;       
+    volatile uint32_t EGR;     
+    volatile uint32_t CCMR1;    
+    uint32_t reserved1;         
+    volatile uint32_t CCER;     
+    volatile uint32_t CNT;      
+    volatile uint32_t PSC;     
+    volatile uint32_t ARR;      
+    uint32_t reserved2;         
+    volatile uint32_t CCR1;     
 } TIM10_11_TypeDef; // For TIM10 and TIM11
 
 // --- Memory Mapping (Peripheral Base Addresses) ---
