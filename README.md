@@ -1,9 +1,9 @@
-# arty-stm32-lib
+# PureSTM-lib
 A lightweight, bare-metal Hardware Abstraction Layer (HAL) for STM32F4 series microcontrollers, written in C without external dependencies.
 
 --- 
 ## 🚀 Overview
-ArtyLib is a personal study project developed to explore the fundamentals of Bare-Metal embedded systems. Instead of relying on pre-built libraries like STM32 CubeHAL, this project focuses on direct communication with the ARM Cortex-M4 hardware through register manipulation.
+PureSTM is a personal study project developed to explore the fundamentals of Bare-Metal embedded systems. Instead of relying on pre-built libraries like STM32 CubeHAL, this project focuses on direct communication with the ARM Cortex-M4 hardware through register manipulation.
 
 The goal of this library is to document my learning journey in Computer Engineering, providing a hands-on understanding of memory mapping, peripheral initialization, and hardware-software interfacing.
 
