@@ -7,19 +7,71 @@
 
 /**
  * @brief Initializes the system clock.
- * @param clk_source: 0 for HSI (Internal), 1 for HSE (External).
- * @param pll_set: Enable (1) or disable (0) the PLL.
- * @param clk_frequency: Reserved for future frequency scaling logic.
+ * @param clk_set: 0 for HSI (16MHz), 1 for HSE (25MHz), 2 for PPL (100MHz)
  */
-void clock_init(uint8_t clk_source, uint8_t pll_set, uint8_t clk_frequency) {
-    if (!clk_source) {
-        RCC->CR |= (1 << 0);
-        if (pll_set) {
-            RCC->CR |= (1 << 24);
+void clock_init(ClockSource_t clk_set) {
+        switch (clk_set){
+            case HSI: 
+                if ((RCC->CFGR & 0xFFFC) == 0) {
+                    break;
+                }
+                RCC->CR |= (1 << 0);
+                while(!(RCC->CR & (1 << 1)));
+                RCC->CFGR &= ~((1 << 1) | (1 << 0));
+                while((RCC->CFGR & (0x3 << 2)) != 0); 
+                RCC->CR &= ~((1 << 24) | (1 << 16));
+                RCC->CFGR &= ~(0xFFF0); 
+                FLASH->ACR &= ~0x7;
+                break;
+            case HSE:
+                FLASH->ACR &= ~0x7;
+                RCC->CR |= (1 << 16);
+                while(!(RCC->CR & (1 << 17)));
+                RCC->CFGR &= ~((1 << 1) | (1 << 0));
+                RCC->CFGR |= (1 << 0);
+                while((RCC->CFGR & (0x3 << 2)) != (1 << 2));
+                RCC->CR &= ~(1 << 24);
+                break;
+            case PPL:
+                RCC->CR |= (1 << 16); 
+                while(!(RCC->CR & (1 << 17)));
+                FLASH->ACR = (1 << 10) | (1 << 9) | (1 << 8) | 0x3;
+                RCC->CFGR |= (0x4 << 10); 
+                RCC->PLLCFGR = (25 << 0) | (200 << 6) | (0 << 16) | (1 << 22);
+                RCC->CR |= (1 << 24); 
+                while(!(RCC->CR & (1 << 25)));
+                RCC->CFGR &= ~0x3;
+                RCC->CFGR |= 0x2; 
+                while(((RCC->CFGR >> 2) & 0x3) != 0x2);
+                break;
         }
     }
-    // TODO: Implement HSE logic and wait for READY bits (stability check)
+/**
+ * @brief  Enables the clock for all peripherals on a specific bus.
+ * @param  bus: The target bus to be enabled (e.g., BUS_AHB1, BUS_APB2).
+ */
+void peripheral_bus_enable(Bus_t bus){
+    switch(bus) {
+        case BUS_AHB1:
+            RCC->AHB1ENR |= AHB1_ALL_EN;
+            break;
+            
+        case BUS_AHB2:
+            RCC->AHB2ENR |= AHB2_ALL_EN;
+            break;
+            
+        case BUS_APB1:
+            RCC->APB1ENR |= APB1_ALL_EN;
+            break;
+            
+        case BUS_APB2:
+            RCC->APB2ENR |= APB2_ALL_EN;
+            break;
+    }
+    __asm("nop");
+    __asm("nop");
 }
+        
 
 // ============================================================================
 // GPIO FUNCTIONS
