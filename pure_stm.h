@@ -1,20 +1,34 @@
 #ifndef PURE_STM_H
 #define PURE_STM_H
 
+#include <stdint.h>
 /**
  * @file pure_stm.h
  * @brief Minimalist Bare-Metal peripheral driver for STM32F4 series microcontrollers.
  * @author Arthyrod
  */
 
-// --- General Definitions ---
+/* =================================================================           
+ * 1. CORE DEFINITIONS
+ * ================================================================= */
+
 #define LOW 0
 #define HIGH 1
 #define INPUT 0
 #define OUTPUT 1
-#define HSI 0
-#define HSE 1
-// --- GPIO Register Structure ---
+
+/* Bus Enable Masks */
+#define AHB1_ALL_EN   0x007000FF  
+#define AHB2_ALL_EN   0x00000080 
+#define APB1_ALL_EN   0x36FE41FF  
+#define APB2_ALL_EN   0x00077911  
+
+
+/* =================================================================           
+ * 2. REGISTER STRUCTURES
+ * ================================================================= */
+
+// --- GPIO ---
 typedef struct {
     volatile uint32_t MODER;    
     volatile uint32_t OTYPER;   
@@ -28,7 +42,7 @@ typedef struct {
     volatile uint32_t AFRH;    
 } GPIO_TypeDef;
 
-// --- RCC Register Structure (Reset and Clock Control) ---
+// --- RCC ---
 typedef struct {
     volatile uint32_t CR;           
     volatile uint32_t PLLCFGR;      
@@ -61,7 +75,17 @@ typedef struct {
     volatile uint32_t DCKCFGR;     
 } RCC_TypeDef;
 
-// --- Timer Structures ---
+// --- Flash ---
+typedef struct {
+    volatile uint32_t ACR;      
+    volatile uint32_t KEYR;     
+    volatile uint32_t OPTKEYR;  
+    volatile uint32_t SR;       
+    volatile uint32_t CR;     
+    volatile uint32_t OPTCR;   
+} FLASH_TypeDef;
+
+// --- Timer ---
 typedef struct {
     volatile uint32_t CR1;      
     volatile uint32_t CR2;    
@@ -144,26 +168,61 @@ typedef struct {
     volatile uint32_t CCR1;     
 } TIM10_11_TypeDef; // For TIM10 and TIM11
 
-// --- Memory Mapping (Peripheral Base Addresses) ---
-#define RCC   ((RCC_TypeDef *)      0x40023800)
+/* =================================================================           
+ * 3. PERIPHERAL INSTANCES (Memory Mapping)
+ * ================================================================= */
 
-#define GPIOA ((GPIO_TypeDef *)     0x40020000)
-#define GPIOB ((GPIO_TypeDef *)     0x40020400)
-#define GPIOC ((GPIO_TypeDef *)     0x40020800)
+#define RCC_BASE  0x40023800
+#define RCC   ((RCC_TypeDef *) RCC_BASE)
 
-#define TIM1  ((TIM_Advanced_TypeDef *) 0x40010000)
-#define TIM2  ((TIM_GenPurp_TypeDef *)   0x40000000)
-#define TIM3  ((TIM_GenPurp_TypeDef *)   0x40000400)
-#define TIM4  ((TIM_GenPurp_TypeDef *)   0x40000800)
-#define TIM5  ((TIM_GenPurp_TypeDef *)   0x40000C00)
-#define TIM9  ((TIM9_TypeDef *)     0x40014000)
-#define TIM10 ((TIM10_11_TypeDef *) 0x40014400)
-#define TIM11 ((TIM10_11_TypeDef *) 0x40014800)
+#define FLASH_BASE 0x40023C00
+#define FLASH ((FLASH_TypeDef *) FLASH_BASE)
 
-// --- Function Prototypes ---
+#define GPIOA_BASE 0x40020000
+#define GPIOA ((GPIO_TypeDef *)     GPIOA_BASE)
+#define GPIOB_BASE 0x40020400
+#define GPIOB ((GPIO_TypeDef *)     GPIOB_BASE)
+#define GPIOC_BASE 0x40020800
+#define GPIOC ((GPIO_TypeDef *)     GPIOC_BASE)
 
+#define TIM1_BASE 0x40010000
+#define TIM1  ((TIM_Advanced_TypeDef *) TIM1_BASE)
+#define TIM2_BASE 0x40000000
+#define TIM2  ((TIM_GenPurp_TypeDef *) TIM2_BASE)
+#define TIM3_BASE 0x40000400
+#define TIM3  ((TIM_GenPurp_TypeDef *) TIM3_BASE)
+#define TIM4_BASE 0x40000800
+#define TIM4  ((TIM_GenPurp_TypeDef *) TIM4_BASE)
+#define TIM5_BASE 0x40000C00
+#define TIM5  ((TIM_GenPurp_TypeDef *) TIM5_BASE)
+#define TIM9_BASE 0x40014000
+#define TIM9  ((TIM9_TypeDef *) TIM9_BASE)
+#define TIM10_BASE 0x40014400
+#define TIM10 ((TIM10_11_TypeDef *) TIM10_BASE)
+#define TIM11_BASE 0x40014800
+#define TIM11 ((TIM10_11_TypeDef *) TIM11_BASE)
+
+/* =================================================================           
+ * 4. API ENUMERATIONS
+ * ================================================================= */
+
+typedef enum {
+    HSI, 
+    HSE, 
+    PLL  
+} ClockSource_t;
+
+typedef enum {
+    BUS_AHB1, BUS_AHB2, BUS_APB1, BUS_APB2
+} Bus_t;
+
+/* =================================================================           
+ * 5. FUNCTION PROTOTYPES
+ * ================================================================= */
+ 
 // RCC
-void clock_init(uint8_t clk_source, uint8_t pll_set, uint8_t clk_frequency);
+void clock_init(ClockSource_t clk_set);
+void peripheral_bus_enable(Bus_t bus);
 
 // GPIO
 void pinMode(GPIO_TypeDef *port, uint8_t pin, uint8_t mode);
@@ -175,3 +234,9 @@ uint8_t pinRead(GPIO_TypeDef *port, uint8_t pin);
 void delay_ms(uint32_t ms);
 
 #endif // PURE_STM_H
+
+
+
+
+
+
