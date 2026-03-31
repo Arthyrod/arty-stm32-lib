@@ -1,7 +1,5 @@
-/* Ponto de entrada */
 ENTRY(Reset_Handler)
 
-/* Mapa de memória do STM32F411CE */
 MEMORY
 {
     FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 512K
@@ -10,7 +8,6 @@ MEMORY
 
 SECTIONS
 {
-    /* Vetores de interrupção e código na Flash */
     .text :
     {
         . = ALIGN(4);
@@ -22,29 +19,26 @@ SECTIONS
         . = ALIGN(4);
     } > FLASH
 
-    /* Dados inicializados (vão para RAM, guardados na Flash) */
     .data : 
     {
         . = ALIGN(4);
-        _sdata = .;        /* Início da seção .data na RAM */
+        _sdata = .;       
         *(.data)
         *(.data*)
         . = ALIGN(4);
-        _edata = .;        /* Fim da seção .data na RAM */
+        _edata = .;       
     } > RAM AT > FLASH
 
-    /* Dados não inicializados */
     .bss :
     {
         . = ALIGN(4);
-        _sbss = .;         /* Início da seção .bss */
+        _sbss = .;       
         *(.bss)
         *(.bss*)
         *(COMMON)
         . = ALIGN(4);
-        _ebss = .;         /* Fim da seção .bss */
+        _ebss = .;        
     } > RAM
 
-    /* Definição do topo da pilha */
     _estack = ORIGIN(RAM) + LENGTH(RAM);
 }
